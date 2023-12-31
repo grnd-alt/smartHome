@@ -138,37 +138,6 @@ app.get('/:deviceID/toggle', async(req,res) => {
   })
 })
 
-
-
-/**
- * set main device to value
- */
-app.get('/:value', async (req, res) => {
-  const state = req.params.value === 'true'
-  const body = {
-    "commands": [
-      {
-        "code": "switch_1",
-        "value": state
-      }
-    ]
-  }
-
-  const path = '/v1.0/iot-03/devices/bf1c2d3a54b4519c57uao6/commands';
-  const url = config.host + path;
-  fetch(url,{method:'POST',
-    headers: await getRequestSign(await getToken(),path,'POST',{},{},body),
-    body: JSON.stringify(body)
-  }
-  ).then(async response => {
-    console.log(await getToken());
-    console.log(url)
-    let body = await response.json()
-    res.send(body)
-  })
-  // res.send('Express');
-});
-
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
