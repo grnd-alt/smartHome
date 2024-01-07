@@ -113,6 +113,37 @@ async function getDeviceState(deviceId:string,code:string) {
 /**
  * toggles supplied device ID
  */
+app.get('/:deviceID/turn/:turn', async(req,res) => {
+  const deviceId = req.params.deviceID;
+  const turn:Boolean = req.params.turn === 'true';
+  const path = `/v1.0/iot-03/devices/${deviceId}/commands`;
+
+  const url = config.host + path;
+  const body = {
+    "commands": [
+      {
+        "code": "switch_1",
+        "value": turn
+      }
+    ]
+  }
+  console.log(body)
+  
+  fetch(url,{method:'POST',
+    headers: await getRequestSign(await getToken(),path,'POST',{},{},body),
+    body: JSON.stringify(body)
+  }).then(async response => {
+      console.log(await getToken());
+      console.log(url)
+      let result = await response.json()
+      res.send(result)
+  })
+})
+
+
+/**
+ * toggles supplied device ID
+ */
 app.get('/:deviceID/toggle', async(req,res) => {
   const deviceId = req.params.deviceID;
   const path = `/v1.0/iot-03/devices/${deviceId}/commands`;
@@ -126,6 +157,7 @@ app.get('/:deviceID/toggle', async(req,res) => {
       }
     ]
   }
+  console.log(body);
   
   fetch(url,{method:'POST',
     headers: await getRequestSign(await getToken(),path,'POST',{},{},body),
